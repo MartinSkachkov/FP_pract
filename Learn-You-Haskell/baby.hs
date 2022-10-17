@@ -36,3 +36,8 @@ doubleSmallNumber' x = (if x > 100 then x else doubleMe x) + 1 --the (if...) wil
 super'Mario = "It's me, Mario!"
 --function names can't start with upper letter
 --function without parameters is called definition
+
+--Function application (calling a function by putting a space after it and then typing out the parameters) has the highest precedence of them all
+--succ 9 + 5 + max 2 4 is the same as:
+--(succ 9) + 5 + (max 2 4)
+--succ 9 * 10 -> 100 since the function succ will be executed first
