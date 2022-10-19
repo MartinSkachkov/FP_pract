@@ -34,7 +34,7 @@ fact n =
         then 1
         else n * fact (n - 1)
 
---GUARDS (kind of similar to the pattern matching)
+--GUARDS (kind of similar to the pattern matching) (sth. like if...else if...else)
 max' :: Int -> Int -> Int
 max' x y
     | x > y = x

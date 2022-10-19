@@ -18,7 +18,7 @@ data Direction = North | West | South | East  --named value versions of Directio
 --pattern matching
 turnLeft :: Direction -> Direction
 turnLeft East = North --(case 1, the direction is East) pattern matching
-turnLeft x = succ x   --(case 2, the direction is not East but sth. else (possible thanks to deriving Enum))
+turnLeft x = succ x   --(case 2, the direction is not East but sth. else (possible to use succ x thanks to deriving Enum))
 --what we pass as a direction to x will be moved one position to the right and return the direction according to the enum
 
 turnRight :: Direction -> Direction
@@ -34,6 +34,15 @@ South
 ghci> turnLeft (turnLeft (turnLeft West)) 
 North
 -}
+
+data Answer = Yes | No | Unknown
+    deriving Show
+
+--pattern matching flip' Yes -> No
+flip' :: Answer -> Answer
+flip' Yes = No
+flip' No = Yes
+flip' Unknown = Unknown
 
 data RGBNames = Red | Green | Blue --named value version of RGB
 data RGB = RGBColor Int Int Int --no named value version of RGB (showing how to create an object of type RGB)
@@ -63,12 +72,24 @@ instance Show RGBColor where
         "Color: " ++ (show(r, g, b))
 -}
 
+data Shape = Circle Float | Rect Float Float
+ -- the constructors in data declaration can have parameters
+ -- Circle and Rect can be viewed as functions that construct values of type Shape
+ -- Circle :: Float -> Shape
+ -- Rect :: Float -> Float -> Rect
+    deriving Show
+
+--pattern matching area (Circle 2) gives some result which is Float
+area :: Shape -> Float
+area (Circle r) = r^2 * pi
+area (Rect x y) = x * y
+
 --we can create an object of type Expr in 3 different ways with different constructors based on what we want
 data Expr = Lit Int | -- <constructor> <input>
             Add Expr Expr | -- <constructor> <input> <input> (recursive data type)
             Sub Expr Expr -- <constructor> <input> <input>
 
-x = Lit 5 --we crated and object named x with the constructor Lit and value 5
+x = Lit 5 --we crated and object of type Expr named x with the constructor Lit and value 5
 y = Lit 6
 sum = Add x y
 diff = Sub x y
@@ -101,6 +122,8 @@ dif = Diff 1 2 --calculate dif -> -1
 mul = Mul 1 2
 diV = Div 1 2
 
+
+--recurtsive data types 
 data NatNum = Succ NatNum | Zero
     deriving Show
 
