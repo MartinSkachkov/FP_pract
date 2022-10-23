@@ -1,20 +1,31 @@
 {-# LANGUAGE EmptyDataDeriving #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}     -- cover all cases!
-{-# OPTIONS_GHC -fwarn-unused-matches #-}          -- use all your pattern matches!
-{-# OPTIONS_GHC -fwarn-missing-signatures #-}      -- write all your toplevel signatures!
-{-# OPTIONS_GHC -fwarn-name-shadowing #-}          -- use different names!
-{-# OPTIONS_GHC -fwarn-incomplete-uni-patterns #-} -- warn about incomplete patterns v2
+-- cover all cases!
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+-- warn about incomplete patterns v2
+{-# OPTIONS_GHC -fwarn-incomplete-uni-patterns #-}
+-- write all your toplevel signatures!
+{-# OPTIONS_GHC -fwarn-missing-signatures #-}
+-- use different names!
+{-# OPTIONS_GHC -fwarn-name-shadowing #-}
+-- use all your pattern matches!
+{-# OPTIONS_GHC -fwarn-unused-matches #-}
 
 module ADTs where
 
 -- TODO: talk about
+
 -- * pls write on teams+join teams
+
 -- * waiting to get timetable?
+
 -- * first homework coming soon :)
 
 -- show:
+
 -- * pragmas on the top of files
+
 -- * where from last week
+
 -- * remind about sections
 
 -- pattern matching
@@ -27,21 +38,22 @@ module ADTs where
 -- example point
 -- mention constructor name requirements, Mk convention
 data Point = MkPoint Float Float
-    deriving Show
+  deriving (Show)
 
 isInFirstQuad :: Point -> Bool
-isInFirstQuad (MkPoint x y) = (x > 0) && (y > 0) --във функцията все едно използваме член-данните
+isInFirstQuad (MkPoint x y) = (x > 0) && (y > 0) -- във функцията все едно използваме член-данните
 -- isInFirstQuadrant (MkPoint 5.0 3.0)
 
 invert :: Point -> Point
 invert (MkPoint x y) = MkPoint (negate x) (negate y)
+
 -- we put (MkPoint x y) in parenthases because it is a one whole argument otherwise the interpreter will count it as three different args : MkPoint x y
---invert pt =
-  --case pt of
-    --MkPoint x y -> MkPoint (negate x) (negate y)
+-- invert pt =
+-- case pt of
+-- MkPoint x y -> MkPoint (negate x) (negate y)
 
 data MyBool = MyTrue | MyFalse
-    deriving Show
+  deriving (Show)
 
 myNot :: MyBool -> MyBool
 myNot MyTrue = MyFalse
@@ -49,7 +61,7 @@ myNot MyFalse = MyTrue
 
 -- RPS - enum example
 data RPS = Rock | Paper | Scissors
-  deriving Show
+  deriving (Show)
 
 -- show ignore pattern match
 -- pattern evaluation order
@@ -64,32 +76,33 @@ beats _ _ = False
 -- example for animal value
 -- example with animal matching
 -- showAnimal
-data Animal = Dog Breed
-            | Cat Color
-            | Add AnimalName
-  deriving Show
+data AnimalType
+  = Dog Breed
+  | Cat Color
+  deriving (Show)
+
+data Animal = MkAnimal AnimalName AnimalType
 
 data Color = Orange | Black | White
-    deriving Show
+  deriving (Show)
 
 data Breed = Labrador | Husky | Borzoi
-  deriving Show
+  deriving (Show)
 
 showAnimal :: Animal -> String
 showAnimal (Dog Borzoi) = "weird"
 showAnimal (Cat Orange) = "orange cat"
 showAnimal animal =
-    case animal of
-        (Dog Husky) -> "husky"
-        (Cat Black) -> "black cat"
-        (Dog Labrador) -> "labrador"
-        (Cat White) -> "white cat"
-
+  case animal of
+    (Dog Husky) -> "husky"
+    (Cat Black) -> "black cat"
+    (Dog Labrador) -> "labrador"
+    (Cat White) -> "white cat"
 
 -- explain the encoding (peano)
 -- recursive data types
 data Nat = Zero | Succ Nat
-  deriving Show
+  deriving (Show)
 
 -- implement
 integerToNat :: Integer -> Nat
@@ -101,12 +114,12 @@ integerToNat n = (Succ (integerToNat (n - 1)))
 -- (Succ (integerToNat (2)))
 --        (Succ (integerToNat(1)))
 --               (Succ (integerToNat(0)))
---                      (Zero) 
+--                      (Zero)
 
 -- implement
 natToInteger :: Nat -> Integer
 natToInteger Zero = 0
-natToInteger (Succ n) = 1 + (natToInteger n) 
+natToInteger (Succ n) = 1 + (natToInteger n)
 
 -- evaluate manually?
 -- (Succ (Succ (Succ Zero)))
@@ -127,12 +140,13 @@ addNat (Succ m) n = (Succ (addNat m n))
 -- (Succ (addNat (Succ Zero) (Succ Zero)))
 --       (Succ (addNat Zero) (Succ Zero))
 --              (Succ Zero)
---(Succ (Succ (Succ Zero))) 
+-- (Succ (Succ (Succ Zero)))
 
 -- test
 test :: Nat -> Nat
 test (Succ x) = x
 test x = x
+
 -- depending which one is first the result is different as (Succ sth.) is pattern matching and it removes the first Succ and returns sth.
 -- while test x returns the same x (non-pattern matching)
 
@@ -174,21 +188,28 @@ eqRPS _ _ = False
 beats' :: RPS -> RPS -> Bool
 beats' x y = eqRPS x (next y)
 
-
 -- TASK
 -- Your task is to model a few of the pieces of the game of Belote
+
 -- * implement a data type for Ranks (7 8 9 10 J etc)
+
 data Rank = Ace | King | Queen | Jack | Num Int
-  deriving Show
+  deriving (Show)
+
 -- * implement a data type for Suits
+
 data Suit = Clubs | Diamonds | Hearths | Spades
-  deriving Show
+  deriving (Show)
+
 -- * implement a data type for a Card
+
 data Card = MkCard Rank Suit
-  deriving Show
+  deriving (Show)
+
 -- * implement a data type for Contracts (all trump, no trump etc)
+
 data Contract = AllTrump | NoTrump
-  deriving Show
+  deriving (Show)
 
 -- Given a Card and a Contract, implement a check whether the card is of a trump suit
 -- done only for all trump
@@ -222,6 +243,7 @@ cardPower _ _ = 0
 -- Assume that the first matched card is played first.
 fight :: Contract -> Card -> Card -> Card
 fight AllTrump (MkCard (Num 9) Diamonds) (MkCard Jack Diamonds) = (MkCard Jack Diamonds)
+
 -- ...
 
 -- TASK
@@ -248,7 +270,7 @@ multNat (Succ n) m = addNat (multNat n m) m
 maxNat :: Nat -> Nat -> Nat
 maxNat x Zero = x
 maxNat Zero y = y
-maxNat (Succ x) (Succ y) = Succ(maxNat x y) -- we decrement both sides with one each time and the first that reaches Zero is the smaller one so we return the bigger one
+maxNat (Succ x) (Succ y) = Succ (maxNat x y) -- we decrement both sides with one each time and the first that reaches Zero is the smaller one so we return the bigger one
 
 -- TASK
 -- Ordering is a datatype that is made to mean "the result of a comparison" or "the ordering between two things"
@@ -275,16 +297,24 @@ compareNat (Succ x) (Succ y) = compareNat x y
 -- or alternatively, a very simple programming language
 --
 -- we can build up Expr(essions) by
+
 -- * injecting integers as a value directly - Val
+
 -- * stating that we want to add the result of two calculations - Plus
+
 -- * stating that we want to multiply the result of two calculations - Mult
+
 data Expr
   = Val Integer
   | Plus Expr Expr
   | Mult Expr Expr
-  | If Expr
-  deriving Show
+  | If Expr Expr Expr
+  deriving (Show)
 
+-- Plus (Val 3) (Mult (Val 4) (Val 5))
+--
+-- 3 + if ... then ... else ..
+-- Plus (Val 3) (If ....)
 -- README - SECTIONS
 --
 -- Writing
@@ -299,7 +329,10 @@ data Expr
 -- be?
 -- We can use these pragmas
 infixr 7 `Plus`
+
 infixr 8 `Mult`
+
+-- 5 `Plus` 3 `Mult` 9
 -- infixr(ight)
 -- to tell the compiler that when used in a section/as operators
 -- Mult has higher priority than Plus, e.g.
@@ -311,6 +344,11 @@ infixr 8 `Mult`
 -- Val 3 `Plus` Val 4 `Plus` Val 5
 -- means
 -- Val 3 `Plus` (Val 4 `Plus` Val 5)
+
+-- PATH?
+-- chocolatey installs where
+-- ghcup installs where
+-- how to set vscode path
 
 -- TASK
 -- and now that we have the syntactic structure of the computation we want to make
@@ -331,7 +369,15 @@ eval :: Expr -> Integer
 eval (Val x) = x
 eval (Plus x y) = eval x + eval y
 eval (Mult x y) = eval x * eval y
---eval (If v) = (eval v)
+eval (If x y z) =
+  if (eval x /= 0)
+    then eval y
+    else eval z
+
+-- eval (If <expr> /=  0)
+--      then execute this
+--      else execute this
+--
 
 -- TASK
 -- add an If expression to our Expr language
@@ -342,12 +388,13 @@ eval (Mult x y) = eval x * eval y
 -- TASK
 -- add a name to the Animal type
 data AnimalName = MkName String
-  deriving Show
+  deriving (Show)
 
 animalName = MkName "Marto"
+
 -- is there more than one way to add it to Animal?
 -- which way would be more convenient for the implementation of the following function?
-introduce :: Animal -> String
-introduce (Add (MkName x)) = x
-introduce _ = ""
+-- introduce :: Animal -> String
+-- introduce (Add (MkName x)) = x
+-- introduce _ = ""
 -- which shows the name of the animal
