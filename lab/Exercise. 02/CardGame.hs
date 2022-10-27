@@ -27,7 +27,7 @@ module CardGame where
     data Spot = EmptySpot | MkSpot MonsterCard
 -- the players take turns - on each Turn the current player must play a card from their hand
 -- play means putting it in an empty spot on the field
-    data Turn = 
+    data Turn = undefined
 -- at the end of each turn, opposing monsters battle, i.e.
 -- X Y Z
 -- U V W
@@ -35,7 +35,7 @@ module CardGame where
 --
 -- battle means that they subtract their attack values from each others' health values, e.g. U loses X.attack health points and X loses U.attack health points
 -- monsters whose attack drops below 0 die (disappear from the battle Field)
-    battle :: MonsterCard -> MonsterCard
+--battle :: MonsterCard -> MonsterCard
 -- if a monster doesn't have anything to attack, it will instead deal direct damage earning Points for its controller equal to its attack
 -- the player with the most points after all cards are played wins
 
