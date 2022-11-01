@@ -21,6 +21,9 @@ rickard =
       interests = ["Programming", "Problem Solving", "Teaching"]
     }
 
+-- :t age :: UserProfile -> Int
+--    age rickard -> int
+
 {-
 profileToString :: UserProfile -> String
 profileToString UserProfile {username, age, active, interests} =
