@@ -178,8 +178,8 @@ isPrime num = divisors num == [1, num]
 -- Prelude.undefined
 lastMaybe :: [a] -> Maybe a
 lastMaybe [] = Nothing
-lastMaybe (x : []) = Just x
-lastMaybe (x : xs) = lastMaybe (xs)
+lastMaybe [x] = Just x -- (x : [])
+lastMaybe (x : xs) = lastMaybe xs
 
 -- EXERCISE
 -- Calculate the length of a list.
@@ -189,8 +189,11 @@ lastMaybe (x : xs) = lastMaybe (xs)
 -- >>> length []
 -- 0
 length :: [a] -> Integer
-length = undefined
+length [] = 0
+length (x : xs) = 1 + length xs
 
+-- length [1,2] -- length (1 : 2 : []) -- 1 + length [2 : []]
+-- 1 + length [[2]] - length ([2] : []) -- 1 + length [[]]
 -- EXERCISE
 -- Return the nth element from a list (we count from 0).
 -- If n >= length xs, return a Nothing
@@ -198,9 +201,14 @@ length = undefined
 -- >>> ix 2 [1,42,69]
 -- Just 69
 -- >>> ix 3 [1,42,69]
+--          0   1  2
 -- Nothing
 ix :: Integer -> [a] -> Maybe a
-ix = undefined
+ix _ [] = Nothing
+ix indx (x : xs) =
+  if indx <= 0
+    then Just x
+    else ix (indx - 1) xs
 
 -- EXERCISE
 -- "Drop" the first n elements of a list.
@@ -211,7 +219,9 @@ ix = undefined
 -- >>> drop 20 $ listFromRange 1 10
 -- []
 drop :: Integer -> [a] -> [a]
-drop = undefined
+drop _ [] = []
+drop 0 xs = xs
+drop n (x : xs) = drop (n - 1) xs
 
 -- EXERCISE
 -- "Take" the first n elements of a list.
@@ -222,7 +232,9 @@ drop = undefined
 -- >>> take 20 $ listFromRange 1 10
 -- [1,2,3,4,5,6,7,8,9,10]
 take :: Integer -> [a] -> [a]
-take = undefined
+take _ [] = []
+take 0 xs = []
+take n (x : xs) = x : take (n - 1) xs
 
 -- EXERCISE
 -- Append one list to another. append [1,2,3] [4,5,6] == [1,2,3,4,5,6]
@@ -237,7 +249,8 @@ take = undefined
 -- >>> append [] [4,5,6]
 -- [4,5,6]
 append :: [a] -> [a] -> [a]
-append = undefined
+append [] xs = xs
+append (x : xs) ys = x : append xs ys
 
 -- EXERCISE
 -- Concatenate all the lists together.
@@ -249,7 +262,8 @@ append = undefined
 -- >>> concat []
 -- []
 concat :: [[a]] -> [a]
-concat = undefined
+concat [] = []
+concat (xs : xss) = append xs (concat xss)
 
 -- EXERCISE
 -- Reverse a list. It's fine to do this however you like.
@@ -259,7 +273,12 @@ concat = undefined
 -- >>> reverse []
 -- []
 reverse :: [a] -> [a]
-reverse = undefined
+reverse [] = []
+reverse (x : xs) = append (reverse xs) [x]
+reverse xs = go [] xs
+  where
+    go acc [] = acc
+    go acc (x : xs) = go (x : acc) xs
 
 -- EXERCISE
 -- Square all the numbers in a list
