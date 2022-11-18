@@ -56,7 +56,7 @@
 ;точка x е равна на f(x)+g(f(x))+f(g(f(x)))+ ... (сумата включва n събираеми).
 
 (define (switchsum f g n)
-  (lambda (x)
+  (λ (x)
     (cond
       [(= n 0) 0]
       [else (+ (f x) ((switchsum g f (- n 1)) (f x)))])))
@@ -102,25 +102,24 @@
   (calculate a 0))
 
 (sum-sum-digit 3 6 3)
-;;;
-;6?
 
-#|(define (valid-sublist lst)
-  (define (find lst res)
-    (cond
-      [(null? lst) '()]
-      [else (if (< (car lst) (cadr lst))
-                (cons (car lst) (cadr lst) (find (cddr lst)
+;Задача 6. Да се дефинира функция (max-ordered-sublist lst), която намира найдългия възходящо сортиран подсписък на списъка от числа lst
 
-(define (max-ordered-sublist lst)
+(define (sublist xs)
   (cond
-    [(null? lst) '()])
-  (define (find-result currlst res)
+    [(null? xs) '()]
+    [(or (null? (cdr xs)) (> (car xs) (cadr xs))) (list (car xs))] 
+    [else (cons (car xs) (sublist (cdr xs)))]))
+    
+(define (max-ordered-sublist lst)
+  (define (helper currLst currMax)
     (cond
-      [(null? currlst) res]
-      [(< res (car currlst)) (find-result (cdr currlst) (cons res
-      [(
-   (find-result (cdr lst) (car lst))|#
+      [(null? currLst) currMax]
+      [(> (length (sublist currLst)) (length currMax)) (helper (cdr currLst) (sublist currLst))]
+      [else (helper (cdr currLst) currMax)]))
+  (helper lst (sublist lst)))
+
+(max-ordered-sublist '(1 5 2 4 6 8 3 4 1)); → '(2 4 6 8)
 
 ;Задача 7. Да се дефинира функция (where list-elements list-predicates), която
 ;връща списък от всички елементи на list-elements, за които са изпълнени всички
@@ -156,4 +155,4 @@
      (helper2 xs ys)))
 
 (set-union '(1 3 5 7) '(5 7 13)) ;→ '(1 3 5 7 13)
-(set-union '(5 7 13) '(1 3 5 7)) ;→ '(1 3 5 7 13)
+(set-union '(5 7 13) '(1 3 5 7)); → '(1 3 5 7 13)
