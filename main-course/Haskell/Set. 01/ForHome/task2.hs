@@ -7,10 +7,10 @@ main = do
   print $ myGcdPM 13 1235 == 13
 
 myGcdG :: Int -> Int -> Int
-myGcdG a b
-  | b == 0 = abs a
-  | otherwise = myGcdG b (a `mod` b)
+myGcdG x y
+  | y == 0 = abs x
+  | otherwise = myGcdG y (mod x y)
 
 myGcdPM :: Int -> Int -> Int
-myGcdPM a 0 = a
-myGcdPM a b = myGcdPM b (a `mod` b)
+myGcdPM x 0 = x
+myGcdPM x y = myGcdPM y (mod x y)

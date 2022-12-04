@@ -14,4 +14,4 @@ divisors :: Int -> [Int]
 divisors n = [x | x <- [1 .. n - 1], x `divides` n]
   where
     divides :: Int -> Int -> Bool
-    divides x n = n `mod` x == 0
+    divides x n = mod n x == 0

@@ -1,8 +1,14 @@
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}     -- cover all cases!
-{-# OPTIONS_GHC -fwarn-unused-matches #-}          -- use all your pattern matches!
-{-# OPTIONS_GHC -fwarn-missing-signatures #-}      -- write all your toplevel signatures!
-{-# OPTIONS_GHC -fwarn-name-shadowing #-}          -- use different names!
-{-# OPTIONS_GHC -fwarn-incomplete-uni-patterns #-} -- warn about incomplete patterns v2
+-- cover all cases!
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+-- warn about incomplete patterns v2
+{-# OPTIONS_GHC -fwarn-incomplete-uni-patterns #-}
+-- write all your toplevel signatures!
+{-# OPTIONS_GHC -fwarn-missing-signatures #-}
+-- use different names!
+{-# OPTIONS_GHC -fwarn-name-shadowing #-}
+-- use all your pattern matches!
+{-# OPTIONS_GHC -fwarn-unused-matches #-}
+
 module Intro where
 
 ---------------------------------
@@ -39,19 +45,27 @@ module Intro where
 
 -- all in all -
 -- the language allows you to
+
 -- * make it harder for yourself to write garbage
+
 --   * very enjoyable to work with - I'm dumb and so I let my compiler do most of my work for me
 --   * used for things that **really** shouldn't break :) - e.g. banks (standard chartered), military :(
+
 -- * be free in what level of abstraction you want to work on
+
 --   * you can write rather low level C-like code
 --   * but you can also almost directly express some mathematical concepts in it
 --
 
 -- disadvantages
 -- not ultra popular:
+
 -- * harder to get a job
+
 -- * some libraries might be outdated/not extremely optimised
+
 -- * there aren't obvious "best ways" to do things sometimes
+
 -- learning curve is very steep at the beginning - especially when you are coming from an "imperative" and/or untyped background
 -- used a lot for things of questionable morality
 
@@ -72,20 +86,21 @@ module Intro where
 -- holes
 -- show where
 
-
 -- show vscode install and features:
 -- vscode examples
 -- warning
 f :: Int -> Int
 f x = 10 + 3
+
 -- hint
 g :: Int -> Int
 g = succ
+
 -- type inference and hover
 -- >>> [1,2,3] ++ [4,5]
 -- [1,2,3,4,5]
 h :: Int -> Int
-h x = g (f x) --first calls (f x) which return 13 and then g which succ 13
+h x = g (f x) -- first calls (f x) which return 13 and then g which succ 13
 -- evaluate code in >>>
 -- it can also enable extensions and do automatic imports, but we won't be lookin at that for now
 
@@ -96,9 +111,8 @@ h x = g (f x) --first calls (f x) which return 13 and then g which succ 13
 fact :: Int -> Int
 fact n =
   if n == 0
-  then 1
-  else n * fact (n - 1)
-
+    then 1
+    else n * fact (n - 1)
 
 -- EXAMPLES
 -- >>> fib 0
@@ -109,9 +123,10 @@ fact n =
 -- 34
 fib :: Integer -> Integer
 fib x =
-    if (x == 0 || x == 1)
-        then x
-        else fib(x - 1) + fib(x - 2) 
+  if (x == 0 || x == 1)
+    then x
+    else fib (x - 1) + fib (x - 2)
+
 -- use the following "mathematical definition" to implement addition on natural numbers:
 -- myPlus x y = y                 if x == 0
 -- myPlus x y = succ(myPlus(pred(x), y)) else
@@ -125,9 +140,10 @@ fib x =
 -- 42
 myPlus :: Integer -> Integer -> Integer
 myPlus n m =
-    if (n == 0) 
-        then m --0 + m = m
-        else succ(myPlus (pred n) m)
+  if (n == 0)
+    then m -- 0 + m = m
+    else succ (myPlus (pred n) m)
+
 -- same as above, implement multiplication on natural numbers recursively, using addition instead of succ
 -- EXAMPLES
 -- >>> myMult 3 23
@@ -138,9 +154,9 @@ myPlus n m =
 -- 42
 myMult :: Integer -> Integer -> Integer
 myMult n m =
-    if (n == 0)
-        then 0
-        else myPlus m (myMult (pred n) m)
+  if (n == 0)
+    then 0
+    else myPlus m (myMult (pred n) m)
 
 -- Author's note: I factored this out to use it in both fastPow and isPrime
 -- >>> 7 `divides` 42
@@ -148,7 +164,7 @@ myMult n m =
 -- >>> 5 `divides` 42
 -- False
 -- divides :: Integer -> Integer -> Bool
--- divides n m = 
+-- divides n m =
 --    m `rem` n == 0
 
 -- In the case of the exponent being even, use the property that
@@ -163,20 +179,22 @@ myMult n m =
 -- 64
 fastPow :: Integer -> Integer -> Integer
 fastPow base expon =
-    if (expon == 0)
-        then 1 --base^0 = 1
-        else
-            if (2 `divides` expon)
-                then fastPow (base * base) (expon `div` 2) --2^4 = fastPow 2*2 2
-                else base * fastPow base (pred expon) --2^5 = 2 * 2^4
--- You can use the rem function:
--- rem x y == what's the remainder of x when divided by y
---
--- For this task, use `where` construct(explained below) to define two helper functions:
---
+  if (expon == 0)
+    then 1 -- base^0 = 1
+    else
+      if (2 `divides` expon)
+        then fastPow (base * base) (expon `div` 2) -- 2^4 = fastPow 2*2 2
+        else base * fastPow base (pred expon) -- 2^5 = 2 * 2^4
+        -- You can use the rem function:
+        -- rem x y == what's the remainder of x when divided by y
+        --
+        -- For this task, use `where` construct(explained below) to define two helper functions:
+        --
+
 divides :: Integer -> Integer -> Bool
 divides x y =
   y `rem` x == 0
+
 --
 -- anyDividesInRange :: Integer -> Integer -> Bool
 -- anyDividesInRange a b == check if in the range (a,b), any of the numbers divide n. You can do this by "iterating" via recursion
@@ -207,5 +225,5 @@ isPrime n = not (anyDividesInRange n 2 (pred n))
 anyDividesInRange :: Integer -> Integer -> Integer -> Bool
 anyDividesInRange n start end =
   if start > end
-  then False
-  else start `divides` n || anyDividesInRange n (succ start) end
+    then False
+    else start `divides` n || anyDividesInRange n (succ start) end

@@ -7,8 +7,4 @@ main = do
   print $ isPalindrome 654 == False
 
 isPalindrome :: Int -> Bool
-isPalindrome n = reverse (digits' n) == digits' n
-
-digits' :: Int -> [Int]
-digits' 0 = []
-digits' n = n `rem` 10 : digits' (n `div` 10)
+isPalindrome n = show n == (reverse $ show n)

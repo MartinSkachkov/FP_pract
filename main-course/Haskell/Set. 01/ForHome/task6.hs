@@ -13,9 +13,12 @@ main = do
   print $ isPrimeLC 61 == True
 
 isPrimeLC :: Int -> Bool
-isPrimeLC n = [x | x <- [1 .. n], n `mod` x == 0] == [1, n]
+isPrimeLC n = [x | x <- [1 .. n], mod n x == 0] == [1, n]
 
-isPrimeG :: Int -> Bool
-isPrimeG n
-  | n <= 1 = False
-  | otherwise = all ((/= 0) . (n `rem`)) [2 .. n - 1]
+isPrimeG :: Integer -> Bool
+isPrimeG n = not $ anyDividesInRange 2 $ pred n
+  where
+    anyDividesInRange :: Integer -> Integer -> Bool
+    anyDividesInRange start end
+      | start > end = False
+      | otherwise = mod n start == 0 || anyDividesInRange (succ start) end
