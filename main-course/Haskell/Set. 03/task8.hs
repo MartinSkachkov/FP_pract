@@ -6,7 +6,7 @@ main = do
 toTuples :: (Num a, Enum a) => [a] -> [a] -> [(a, a)]
 toTuples xs [] = zip xs [0, 0 ..]
 toTuples [] ys = zip [0, 0 ..] ys
-toTuples xs ys = zip xs ys
+toTuples (x : xs) (y : ys) = (x, y) : toTuples xs ys
 
 {-
 toTuples :: (Num a, Enum a) => [a] -> [a] -> [(a, a)]
