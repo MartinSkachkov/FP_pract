@@ -5,7 +5,16 @@ main :: IO ()
 main = do
   print $ reduceStr "dabAcCaCBAcCcaDD" == "dabCBAcaDD" -- dabAcCaCBAcCcaDD -> dabAaCBAcCcaDD -> dabCBAcCcaDD -> dabCBAcaDD
 
--- не знам как да я реша
-
 reduceStr :: String -> String
-reduceStr = concatMap nub . group . map toLower
+reduceStr s =
+  foldr
+    ( \letter acc ->
+        if acc /= "" && nextTo (head acc) letter
+          then tail acc
+          else letter : acc
+    )
+    []
+    s
+  where
+    nextTo :: Char -> Char -> Bool
+    nextTo c1 c2 = c1 /= c2 && toLower c1 == toLower c2
