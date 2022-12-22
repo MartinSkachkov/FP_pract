@@ -11,3 +11,6 @@ sumUnique xss = sum $ concat $ lst $ group $ sort $ concat xss
   where
     lst :: [[Int]] -> [[Int]]
     lst xss = [xs | xs <- xss, length xs == 1]
+
+sumUnique' :: [[Int]] -> Int
+sumUnique' xss = sum $ concat $ filter (\xs -> length xs == 1) $ group $ sort $ concat xss

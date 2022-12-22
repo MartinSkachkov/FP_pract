@@ -7,10 +7,10 @@ main = do
   print $ divByN [1, 2, 3, 4, 5] 0
   print $ filterByN [1, 2, 3, 4, 5] 3 == [3, 4, 5]
 
-addN :: Num b => [b] -> b -> [b]
+addN :: (Num b) => [b] -> b -> [b]
 addN xs n = map (+ n) xs
 
-sqAddN :: Num b => [b] -> b -> [b]
+sqAddN :: (Num b) => [b] -> b -> [b]
 sqAddN xs n = map ((^ 2) . (+ n)) xs
 
 divByN :: (Fractional b, Integral a1, Integral a2) => [a2] -> a1 -> [b]
