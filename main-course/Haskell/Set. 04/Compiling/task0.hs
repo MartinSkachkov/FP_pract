@@ -1,6 +1,6 @@
 main :: IO ()
 main = do
-  contents <- readFile "sample.txt"
+  contents <- readFile "sample1.txt"
   print $ map words $ lines $ contents
   putStrLn contents
 
