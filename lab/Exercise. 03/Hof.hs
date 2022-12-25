@@ -1,4 +1,14 @@
 {-# LANGUAGE RankNTypes #-}
+-- cover all cases!
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+-- warn about incomplete patterns v2
+{-# OPTIONS_GHC -fwarn-incomplete-uni-patterns #-}
+-- write all your toplevel signatures!
+{-# OPTIONS_GHC -fwarn-missing-signatures #-}
+-- use different names!
+{-# OPTIONS_GHC -fwarn-name-shadowing #-}
+-- use all your pattern matches!
+{-# OPTIONS_GHC -fwarn-unused-matches #-}
 
 module HOF where
 
@@ -101,7 +111,7 @@ xyzzy1 = MkTuple True ()
 infixr 0 $
 
 -- EXERCISE
--- Take two arguments and return the second.
+-- Take two arguments and return the first.
 -- This is called const because if we think of it as a function
 -- on one argument x, it returns a function that when called, always returns x
 -- It is also practically always used partially applied.
@@ -111,10 +121,7 @@ infixr 0 $
 -- >>> applyTwice (const 42) 1337
 -- 42
 const :: a -> b -> a
-const x y = x
-
-applyTwice' :: (a -> a) -> a -> a
-applyTwice' f y = f (f y)
+const x _ = x
 
 -- EXERCISE
 -- Compose two functions, very useful very often
@@ -125,12 +132,8 @@ applyTwice' f y = f (f y)
 -- >>> let f = compose (*5) (+5) in f 4
 -- 45
 compose :: (b -> c) -> (a -> b) -> a -> c
-compose f g num = f (g num)
+compose f g = f . g
 
--- (3+)
--- (+) 3
--- const 42
--- (+) 42
 -- EXERCISE
 -- Iterate a function f n times over a base value x.
 -- EXAMPLES
@@ -139,7 +142,8 @@ compose f g num = f (g num)
 -- >>> iterateN (*2) 1 10
 -- 1024
 iterateN :: (a -> a) -> a -> Integer -> a
-iterateN = undefined
+iterateN _ x 0 = x
+iterateN f x n = iterateN f (f x) (n - 1)
 
 -- EXERCISE
 -- Swap the two elements of a tuple
@@ -147,7 +151,7 @@ iterateN = undefined
 -- >>> swap $ MkTuple 42 69
 -- MkTuple 69 42
 swap :: Tuple a b -> Tuple b a
-swap = undefined
+swap (MkTuple x y) = MkTuple y x
 
 -- EXERCISE
 -- Apply a function to only the first component of a tuple
@@ -155,25 +159,25 @@ swap = undefined
 -- >>> first (*2) $ MkTuple 21 1337
 -- MkTuple 42 1337
 first :: (a -> b) -> Tuple a c -> Tuple b c
-first = undefined
+first f (MkTuple x y) = MkTuple (f x) y
 
 -- EXERCISE
 -- Convert a function operating on a tuple, to one that takes two arguments.
 -- Called Curry after Haskell Curry - inventor of lambda calculus.
 -- EXAMPLES
--- >>> curryTuple (\(MkTuple x y) -> x * y) 23 3
+-- >>> curry (\(MkTuple x y) -> x * y) 23 3
 -- 69
 curry :: (Tuple a b -> c) -> a -> b -> c
-curry = undefined
+curry f x y = f $ MkTuple x y
 
 -- EXERCISE
 -- Convert a function operating on a tuple, to one that takes two arguments.
 -- Called Curry after Haskell Curry - inventor of lambda calculus.
 -- EXAMPLES
--- >>> uncurryTuple (\x y -> x + y) $ MkTuple 23 46
+-- >>> uncurry (\x y -> x + y) $ MkTuple 23 46
 -- 69
 uncurry :: (a -> b -> c) -> Tuple a b -> c
-uncurry = undefined
+uncurry f (MkTuple x y) = f x y
 
 -- EXERCISE
 -- > p `on` f
@@ -188,13 +192,13 @@ sumTuple (MkTuple x y) = x + y
 -- 59
 -- You can look at the `fight` from the solutions from last time for good actual usage of the function
 on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
-on = undefined
+on op f x y = op (f x) (f y)
 
 -- EXERCISE
 -- Apply two different functions to the two different arguments of a tuple
 -- Think about what the type should be.
--- mapTuple :: ???
--- mapTuple = undefined
+mapTuple :: Tuple a b -> (a -> c) -> (b -> z) -> Tuple c z
+mapTuple (MkTuple x y) f g = MkTuple (f x) (g y)
 
 data Nat
   = Zero
@@ -204,21 +208,57 @@ data Nat
 -- EXERCISE
 -- Look at addNat and multNat from last time.
 --
--- addNat :: Nat -> Nat -> Nat
--- addNat Zero m = m
--- addNat (Succ n) m = Succ (addNat n m)
+addNat :: Nat -> Nat -> Nat
+addNat Zero m = m
+addNat (Suc n) m = Suc (addNat n m)
+
 --
--- multNat :: Nat -> Nat -> Nat
--- multNat Zero _ = Zero
--- multNat (Succ n) m = addNat m (multNat n m)
---
+multNat :: Nat -> Nat -> Nat
+multNat Zero _ = Zero
+multNat (Suc n) m = addNat m (multNat n m)
+
 -- They look very similar.
 -- Can you implement a general enough higher-order function that you can then use to
 -- implement both of them by passing suitable arguments?
 -- If your function is "good enough" you should also be able to implement exponentiation using it.
--- coolNat :: ???
--- coolNat = ???
+coolNat :: a -> (a -> a) -> Nat -> a
+coolNat z _ Zero = z
+coolNat z s (Suc n) = s $ coolNat z s n
+
+addNat' :: Nat -> Nat -> Nat
+addNat' n m = coolNat m Suc n
+
+multNat' :: Nat -> Nat -> Nat
+multNat' n m = coolNat Zero (addNat m) n
+
+expNat :: Nat -> Nat -> Nat
+expNat n = coolNat (Suc Zero) (multNat n)
+
 -- Can you also implement the "predecessor" function using it? Yes/no, and why? Please do share
--- predNat :: Nat -> Nat
--- predNat Zero = Zero
--- predNat (Suc n) = n
+predNat :: Nat -> Nat
+predNat = fst . coolNat x f
+  where
+    x :: (Nat, Bool)
+    x = (Zero, True)
+
+    f :: (Nat, Bool) -> (Nat, Bool)
+    f (Zero, True) = (Zero, False)
+    f (x, False) = (Suc x, False)
+
+-- we can use a similar idea to implement minus, but instead of using a boolean tag, we keep the number of times we must skip the Suc
+minusNat :: Nat -> Nat -> Nat
+minusNat n m = fst $ coolNat x f n
+  where
+    x :: (Nat, Nat)
+    x = (Zero, m)
+
+    f :: (Nat, Nat) -> (Nat, Nat)
+    f (Zero, Suc y) = (Zero, y)
+    f (x, Zero) = (Suc x, Zero)
+
+-- >>> minusNat (Suc $ Suc $ Suc $ Suc $ Suc Zero) (Suc $ Suc $ Suc Zero)
+-- Suc (Suc Zero)
+-- >>> minusNat (Suc $ Suc $ Suc $ Suc $ Suc Zero) Zero
+-- Suc (Suc (Suc (Suc (Suc Zero))))
+-- >>> minusNat (Suc $ Suc Zero) (Suc $ Suc $ Suc Zero)
+-- Zero
