@@ -31,14 +31,16 @@ isSorted [] = True
 isSorted [x] = True
 isSorted (x : y : xs)
   | x == y = isSorted (y : xs)
-  | otherwise = if x < y then checkAscending (y : xs) else checkDescending (y : xs)
+  | x < y = checkAscending (y : xs)
+  | otherwise = checkDescending (y : xs)
 
 isSortedXs :: (Ord a) => [a] -> Bool
 isSortedXs [] = True
 isSortedXs [x] = True
 isSortedXs xs
   | length lst == 1 = True
-  | otherwise = if head lst < lst !! 1 then checkAscending $ drop 1 lst else checkDescending $ drop 1 lst
+  | head lst < lst !! 1 = checkAscending $ drop 1 lst
+  | otherwise = checkDescending $ drop 1 lst
   where
     lst = concat $ map nub $ group xs
 

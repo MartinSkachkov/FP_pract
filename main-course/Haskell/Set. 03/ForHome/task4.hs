@@ -18,24 +18,20 @@ main = do
 
 type Rat a = (a, a)
 
+normalize :: (Integral b) => (b, b) -> (b, b)
+normalize (x, y) = (div x (gcd x y), div y (gcd x y))
+
 sumRats :: (Integral a) => Rat a -> Rat a -> Rat a
 sumRats (x1, y1) (x2, y2) = normalize (first, second)
   where
     first = div (lcm y1 y2) y1 * x1 + div (lcm y1 y2) y2 * x2
     second = lcm y1 y2
-    normalize (x, y) = (div x (gcd x y), div y (gcd x y))
 
 multiplyRats :: (Integral a) => Rat a -> Rat a -> Rat a
 multiplyRats (x1, y1) (x2, y2) = normalize (x1 * x2, y1 * y2)
-  where
-    normalize (x, y) = (div x (gcd x y), div y (gcd x y))
 
 divideRats :: (Integral a) => Rat a -> Rat a -> Rat a
 divideRats (x1, y1) (x2, y2) = normalize $ multiplyRats (x1, y1) (y2, x2)
-  where
-    normalize (x, y) = (div x (gcd x y), div y (gcd x y))
 
 areEqual :: (Integral a) => Rat a -> Rat a -> Bool
 areEqual (x1, y1) (x2, y2) = normalize (x1, y1) == normalize (x2, y2)
-  where
-    normalize (x, y) = (div x (gcd x y), div y (gcd x y))

@@ -4,8 +4,7 @@ Learn You a _Haskell_ for Great Good!
 _by Miran Lipovača._
 
 This is my personal copy of “Learn You a Haskell for Great Good!”, the prettiest
-book for learning Haskell that I know of. I obtained this copy by using
-[Pandoc](http://johnmacfarlane.net/pandoc/).
+book for learning Haskell that I know of.
 
 You can read the book [online](http://learnyouahaskell.com/chapters) or [buy a
 copy](http://nostarch.com/lyah.htm).
@@ -24,14 +23,6 @@ Description at learnyouahaskell.com
 > To contact me, shoot me an email to: bonus at learnyouahaskell dot com! You
 > can also find me idling on [#haskell](irc://irc.freenode.net/haskell) where I
 > go by the name BONUS.
-
-What is this repo for?
-----------------------
-
-With the help of this repo, you can make your own ebook version of the book.
-Make sure you have Pandoc installed and pdflatex (for making the pdf) and then 
-use 'make all', 'make epubs' or 'make pdfs' depending on what you want.
-The output will be written to a directory called 'out'
 
 License
 -------
