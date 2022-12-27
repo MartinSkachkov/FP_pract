@@ -208,7 +208,7 @@ data Nat = Zero | Suc Nat
 
 -- EXERCISE
 -- Implement a Monoid instance for Nat based on addition
-instance Semigroup Nat where
+instance Semigroup Nat where -- implementation of the funct of class Semigroup depending on the current instance
   (<>) :: Nat -> Nat -> Nat
   (<>) Zero n = n
   (<>) (Suc m) n = Suc ((<>) m n)
@@ -216,7 +216,7 @@ instance Semigroup Nat where
 -- neutral element
 instance Monoid Nat where
   mempty :: Nat
-  mempty = Zero
+  mempty = Zero -- neutral element for the associative operation
 
 -- instance Semigroup Nat where
 -- instance Monoid Nat where
@@ -226,31 +226,54 @@ instance Monoid Nat where
 -- Note how regardless of what a is, [a] is always a Monoid.
 -- This is similar to what is usually called a "free" structure in mathematics.
 -- And indeed, lists are "the free Monoid"
--- instance Semigroup [a] where
--- instance Monoid [a] where
+instance Semigroup [a] where
+ (<>):: [a] -> [a] ->[a]
+ (<>) [] ys = ys
+ (<>) (x:xs) ys = x : (<>) xs ys
+
+
+instance Monoid [a] where
+  mempty :: [a]
+  mempty = []
 
 -- EXERCISE
 -- Implement a monoid instance for the Any type, with the following semantics:
 --
 -- When combining things via (<>), we want to see if any of the arguments are True
 newtype Any = Any Bool
+ deriving (Show)
 
--- instance Semigroup Any where
--- instance Monoid Any where
+instance Semigroup Any where
+ (<>) :: Any -> Any -> Any
+ (<>) (Any cond1) (Any cond2) = Any $ cond1 || cond2
 
+instance Monoid Any where
+ mempty:: Any
+ mempty = Any False
 -- EXERCISE
 -- Implement a monoid instance for the All type, with the following semantics:
 --
 -- When combining things via (<>), we want to see if all of the arguments are True
 newtype All = All Bool
+ deriving(Show)
 
--- instance Semigroup All where
--- instance Monoid All where
+instance Semigroup All where
+  (<>) :: All -> All -> All
+  (<>) (All cond1) (All cond2) = All $ cond1 && cond2
+
+instance Monoid All where
+  mempty :: All
+  mempty = All False
 
 -- EXERCISE
 -- We can lift monoids over tuples by doing the monoidal operation component-wise. Implement the instance
--- instance (Semigroup a, Semigroup b) => Semigroup (a, b) where
--- instance (Monoid a, Monoid b) => Monoid (a, b) where
+instance (Semigroup a, Semigroup b) => Semigroup (a, b) where
+  (<>) :: (a,b) -> (a,b) -> (a,b)
+  (<>) (x1,y1) (x2,y2) = (x1 <> x2, y1 <> y2)
+
+instance (Monoid a, Monoid b) => Monoid (a, b) where
+  mempty :: (a,b)
+  mempty = (mempty :: a, mempty :: b)
 
 -- EXERCISE
 -- "Monoid multiplication"
@@ -264,7 +287,8 @@ newtype All = All Bool
 -- >>> mtimes (Suc $ Suc Zero) $ Add 21
 -- Add 42
 mtimes :: Monoid a => Nat -> a -> a
-mtimes = undefined
+mtimes Zero _ = mempty
+mtimes (Suc n) x = x <> mtimes n x
 
 -- EXERCISE
 -- Combine a list of elements, assuming that the type in the list is a Monoid
@@ -276,7 +300,8 @@ mtimes = undefined
 -- >>> fold $ [[1,2,3],[4,5,6],[7,8,9]]
 -- [1,2,3,4,5,6,7,8,9]
 fold :: Monoid a => [a] -> a
-fold = undefined
+fold [] = mempty
+fold (x:xs) = x <> fold xs
 
 -- EXERCISE
 -- "Fold" a Maybe using a monoid and a mapping function.
@@ -290,7 +315,8 @@ fold = undefined
 -- >>> foldMapMaybe (:[]) Nothing
 -- []
 foldMapMaybe :: Monoid b => (a -> b) -> Maybe a -> b
-foldMapMaybe = undefined
+foldMapMaybe _ Nothing = mempty
+foldMapMaybe f (Just x) = f x 
 
 -- EXERCISE
 -- Fold a list using a mapping function. Try implementing this with foldr.
