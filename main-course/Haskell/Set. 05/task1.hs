@@ -1,4 +1,5 @@
 import Data.Char
+import Data.List
 
 main :: IO ()
 main = do
@@ -83,3 +84,7 @@ treeEq _ _ = False
 maxDepth :: BTree a -> Int
 maxDepth Empty = 0
 maxDepth (Node val left right) = 1 + max (maxDepth left) (maxDepth right)
+
+mirror :: BTree a -> BTree a
+mirror Empty = Empty
+mirror (Node val l r) = Node val (mirror r) (mirror l)
